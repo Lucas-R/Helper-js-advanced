@@ -3,6 +3,12 @@ class Helper {
         return this.Element({ selector: "#root" });
     }
 
+    async Fetch(url) {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    }
+
     Element({ selector }) {
         return document.querySelector(selector);
     }
@@ -17,7 +23,7 @@ class Helper {
         position = "beforeend",
         css
     }) {
-        if(css) this.Style(css);
+        if(css) this.Css({ css });
         return wrapper.insertAdjacentHTML(position, node);
     }
 
@@ -33,7 +39,7 @@ class Helper {
         return this.Element({ selector: "head title" }).innerText = title;
     }
 
-    Style(css) {
+    Css({ css, position }) {
         const style = this.Element({ selector: 'style[data-injected="true"]' });
         const inline = css.replace(/\s+/g, "").trim();
         if(!style) {
@@ -46,9 +52,17 @@ class Helper {
         if(style.innerText.indexOf(inline) === -1) {
             this.Text({
                 text: inline, 
-                wrapper: style
+                wrapper: style,
+                position
             });
         }
+    }
+
+    Reset(reset) {
+        this.Css({
+            css: reset,
+            position: "beforebegin"
+        });
     }
 
     Execute(callback) {
@@ -56,4 +70,10 @@ class Helper {
     }
 }
 
-export default new Helper();
+function rem(px) {
+    return `${px / 16}rem`
+}
+
+const l = new Helper();
+
+export { l, rem };

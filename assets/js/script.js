@@ -1,34 +1,33 @@
-import Helper from "./helper.js";
+import { l, rem } from "./helper.js";
 
-Helper.Execute(() => {
-    Helper.Title("Home");
+l.Reset(`
+    * {
+        padding: 0;
+        margin: 0;
+    }
+`);
 
-    Helper.Style(`
-        body {
-            background: blue
-        }
-    `);
+l.Execute(async () => {
+    const data = await l.Fetch("./assets/data/posts.json");
 
-    Helper.Insert({
+    l.Title("Posts");
+
+    l.Insert({
         node: `
             <div class="box">
-                <p>New Element</p>
-            </div>
-        `,
-    });
-
-        Helper.Insert({
-        node: `
-            <div class="box">
-                <p>New Element</p>
+                ${data.map(post => (`
+                    <div>
+                        <p>${post.title}</p>
+                        <p>${post.description}</p>
+                    </div>
+                `)).join("")}
             </div>
         `,
         css: `
-            .box {
-                width: 100px;
-                height: 100px;
-                background: black
-            }     
+            .box{
+                display: flex;
+                gap: ${rem(100)}
+            }
         `
     });
 });
